@@ -5,8 +5,8 @@ This is the Python implementation of the SEDNet with GwcNet backbone. (**Learnin
 ## Environment
 * python 3.7
 * Pytorch >= 0.10.2
+* Cuda >= 11.0
 * Anaconda
-* GPU >= 1
 * Create environment by `conda env create -f sednet.yml` or `conda create --name myenv --file sednet.txt`
 
 ## Data Preparation
