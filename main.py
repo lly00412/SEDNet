@@ -135,7 +135,7 @@ def train():
         if args.training:
             save_outputs = {"disp_est": [], "disp_gt": [], "uncert_est": [], "cost_conf": [], "pred_conf": []}
             for batch_idx, sample in enumerate(TrainImgLoader):
-                global_step = len(TrainImgLoader) * epoch_idx + batch_idx
+                global_step = 2*len(TrainImgLoader) * epoch_idx + 2*batch_idx
                 start_time = time.time()
                 do_summary = global_step % args.summary_freq == 0
                 losses, scalar_outputs, image_outputs = train_sample(sample, compute_metrics=do_summary)
