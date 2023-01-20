@@ -2,6 +2,8 @@ from __future__ import print_function
 import torch.utils.data
 from models.submodule import *
 import math
+import torch.nn.functional as F
+from models.utils_dropout import Nodrop
 
 
 class feature_extraction(nn.Module):
@@ -160,9 +162,13 @@ class GwcNet(nn.Module):
                                    convbn_3d(32, 32, 3, 1, 1),
                                    nn.ReLU(inplace=True))
 
+
+
         self.dres1 = nn.Sequential(convbn_3d(32, 32, 3, 1, 1),
                                    nn.ReLU(inplace=True),
                                    convbn_3d(32, 32, 3, 1, 1))
+
+
 
         self.dres2 = hourglass(32)
 
@@ -208,6 +214,12 @@ class GwcNet(nn.Module):
             elif isinstance(m, nn.Linear):
                 m.bias.data.zero_()
 
+        ####################################################
+        # add dropout
+        ####################################################
+        self.dropout1 = Nodrop()
+        self.dropout2 = Nodrop()
+
     def forward(self, left, right):
         features_left = self.feature_extraction(left)
         features_right = self.feature_extraction(right)
@@ -221,8 +233,10 @@ class GwcNet(nn.Module):
         else:
             volume = gwc_volume
 
-        cost0 = self.dres0(volume)
-        cost0 = self.dres1(cost0) + cost0
+        cost0 = self.dres0(volume)  # (8, 32, 48, 64, 128)
+        cost0 = self.dropout1(cost0)
+        cost0 = self.dres1(cost0) + cost0  # (8, 32, 48, 64, 128) B,G,D,H,W
+        cost0 = self.dropout2(cost0)
 
         out1 = self.dres2(cost0)
         out2 = self.dres3(out1)

@@ -1,5 +1,6 @@
 from models.gwcnet import GwcNet_G, GwcNet_GC, GwcNet_GCS
 from models.loss import model_loss
+from models.torchclustermetrics import *
 
 __models__ = {
     "gwcnet-g": GwcNet_G,

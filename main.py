@@ -12,6 +12,7 @@ from models import __models__, model_loss
 from utils import *
 from torch.utils.data import DataLoader
 import gc
+from models.utils_network import *
 # from ptflops import get_model_complexity_info
 
 
@@ -28,7 +29,7 @@ parser.add_argument('--maxdisp', type=int, default=192, help='maximum disparity'
 parser.add_argument('--inliers', type=int, default=3, help='how many std to include for inliers')
 parser.add_argument('--bin_scale', type=str, default='line', help='how to create the distribution, line or log')
 parser.add_argument('--n_bins', type=int, default=11, help='how many bins to create the distribution')
-parser.add_argument('--loss_type', type=str, required=True, help='define the componet of loss')
+parser.add_argument('--loss_type', type=str, required=True,default='smooth_l1', help='define the componet of loss',choices=['smooth_l1','UC','KG'])
 parser.add_argument('--mask', type=str, default='soft', help='type of mask assignment',choices=['soft','hard'])
 
 # dataset
@@ -57,6 +58,13 @@ parser.add_argument('--logdir', required=True, help='the directory to save logs 
 parser.add_argument('--summary_freq', type=int, default=10, help='the frequency of saving summary')
 parser.add_argument('--save_freq', type=int, default=1, help='the frequency of saving checkpoint')
 parser.add_argument('--save_test', action='store_true', help='save test outputs if presents.')
+
+#dropout
+parser.add_argument('--compute_cluster', action='store_true', help='computer clusters before start to train.')
+parser.add_argument('--n_cluster', type=int, default=16, help='num of clusters.')
+parser.add_argument('--maskdir', type=str, help='the directory to save/load in cluster mask.')
+parser.add_argument('--dropout', type=str, default='nodrop', help='type of dropout.',choices=['nodrop','dropout','dropblock','dropcluster'])
+parser.add_argument('--drop_prob', type=float, default=0.2, help='dropout probablity.')
 
 # parse arguments, set seeds
 args = parser.parse_args()
@@ -117,6 +125,7 @@ elif args.loadckpt:
     model.load_state_dict(state_dict['model'])
 print("start at epoch {}".format(start_epoch))
 
+set_dropout(args,model)
 
 def train():
     for epoch_idx in range(start_epoch, args.epochs):
