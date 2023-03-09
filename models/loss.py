@@ -21,7 +21,7 @@ def model_loss(output, disp_gt, mask,args):
     weights = [0.5, 0.5, 0.7, 1.0]
 
     if args.loss_type == 'smooth_l1':
-        losses = smooth_l1(output, disp_gt, weights,mask)
+        losses = smooth_l1(output, disp_gt, weights,mask,args)
     if args.loss_type == 'KG':
         losses = KG_loss(output, disp_gt, weights,mask,args)
     if args.loss_type == 'UC':
@@ -29,7 +29,7 @@ def model_loss(output, disp_gt, mask,args):
     return losses
 
 
-def smooth_l1(output, disp_gt, weights,mask):
+def smooth_l1(output, disp_gt, weights,mask,args):
     disp_ests = output['disp']
 
     scale = 0
@@ -38,10 +38,30 @@ def smooth_l1(output, disp_gt, weights,mask):
 
     for disp_est, weight in zip(disp_ests,weights):
         disp_loss = F.smooth_l1_loss(disp_est[mask], disp_gt[mask], reduce=False) # (must small than 1 after norm)
-        total_loss += weight * disp_loss.mean()
 
-        losses["avg_epe/{}".format(scale)] = disp_loss.mean()
-        losses["std_epe/{}".format(scale)] = torch.std(disp_loss)
+        if args.inliers > 0:
+            l1_loss = torch.abs(disp_est[mask] - disp_gt[mask])
+            if args.mask in ['soft']:
+                epe_std = torch.std(l1_loss)
+                epe_miu = torch.mean(l1_loss)
+                dist_to_miu = torch.abs(l1_loss - epe_miu)
+                inliers = (dist_to_miu < args.inliers * epe_std)
+            else:
+                inliers = (l1_loss < args.inliers)
+            pct = torch.mean(inliers.float())*100
+            losses["% of inliers/{}".format(scale)] = pct
+
+        else:
+            inliers = torch.ones(l1_loss.size(), dtype=torch.bool)
+
+        total_loss += weight * disp_loss[inliers].mean()
+
+        losses["avg_epe/{}".format(scale)] = l1_loss.mean()
+        losses["std_epe/{}".format(scale)] = torch.std(l1_loss)
+
+        if args.inliers > 0:
+            losses["avg_epe/inliers/{}".format(scale)] = l1_loss[inliers].mean()
+            losses["std_epe/inliers/{}".format(scale)] = torch.std(l1_loss[inliers])
 
         scale += 1
 

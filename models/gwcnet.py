@@ -2,7 +2,7 @@ from __future__ import print_function
 import torch.utils.data
 from models.submodule import *
 import math
-
+import torch.nn.functional as F
 
 class feature_extraction(nn.Module):
     def __init__(self, concat_feature=False, concat_feature_channel=12):
