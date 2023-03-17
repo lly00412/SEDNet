@@ -3,7 +3,7 @@ import random
 from torch.utils.data import Dataset
 from PIL import Image
 import numpy as np
-from datasets.data_io import get_transform_kitti, read_all_lines, pfm_imread
+from datasets.data_io import get_transform, read_all_lines, pfm_imread
 import scipy.ndimage as ndi
 
 class SceneFlowDatset(Dataset):
@@ -40,8 +40,9 @@ class SceneFlowDatset(Dataset):
         disparity = self.load_disp(os.path.join(self.datapath, self.disp_filenames[index]))
 
         if self.training:
-            w, h = left_img.size
-            crop_w, crop_h = 512, 256
+            w, h = left_img.size # (960,540)
+            crop_w, crop_h = w - self.crop_w, h - self.crop_h
+            # crop_w, crop_h = 512, 256
 
             x1 = random.randint(0, w - crop_w)
             y1 = random.randint(0, h - crop_h)
@@ -51,29 +52,30 @@ class SceneFlowDatset(Dataset):
             right_img = right_img.crop((x1, y1, x1 + crop_w, y1 + crop_h))
             disparity = disparity[y1:y1 + crop_h, x1:x1 + crop_w]
 
-            # to tensor, normalize
-            processed = get_transform_kitti()
+            # downsample to H/2, W/2, to tensor, normalize
+            resize_w, resize_h = int(crop_w * self.zoom), int(crop_h * self.zoom)
+            processed = get_transform(resize_w, resize_h)
             left_img = processed(left_img)
             right_img = processed(right_img)
+            disparity = ndi.zoom(disparity, zoom=self.zoom)
+            disparity = disparity * self.zoom
 
             return {"left": left_img,
                     "right": right_img,
                     "disparity": disparity}
         else:
             w, h = left_img.size
-            crop_w, crop_h = 960, 512
 
-            left_img = left_img.crop((w - crop_w, h - crop_h, w, h))
-            right_img = right_img.crop((w - crop_w, h - crop_h, w, h))
-            disparity = disparity[h - crop_h:h, w - crop_w: w]
-
-            processed = get_transform_kitti()
+            resize_w, resize_h = int(w * self.zoom), int(h * self.zoom)
+            processed = get_transform(resize_w, resize_h)
             left_img = processed(left_img)
             right_img = processed(right_img)
+            disparity = ndi.zoom(disparity, zoom=self.zoom)
+            disparity = disparity * self.zoom
 
             return {"left": left_img,
                     "right": right_img,
                     "disparity": disparity,
                     "top_pad": 0,
-                    "right_pad": 0}
-
+                    "right_pad": 0,
+                    "left_filename":self.left_filenames[index]}

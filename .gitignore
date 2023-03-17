@@ -1,2 +1,8 @@
 
 *.pyc
+*.ckpt
+*.xml
+*.pth
+*.vision25
+*.pyc
+*.pyc

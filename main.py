@@ -33,9 +33,9 @@ parser.add_argument('--mask', type=str, default='soft', help='type of mask assig
 
 # dataset
 parser.add_argument('--dataset', required=True, help='dataset name', choices=__datasets__.keys())
-# parser.add_argument('--zoom', type=float, default=1.0, help='scaler for zoom in/out the image')
-# parser.add_argument('--crop_w', type=int, default=0, help='random crop width')
-# parser.add_argument('--crop_h', type=int, default=0, help='random crop height')
+parser.add_argument('--zoom', type=float, default=1.0, help='scaler for zoom in/out the image')
+parser.add_argument('--crop_w', type=int, default=0, help='random crop width')
+parser.add_argument('--crop_h', type=int, default=0, help='random crop height')
 parser.add_argument('--datapath', required=True, help='data path')
 parser.add_argument('--trainlist', required=True, help='training list')
 parser.add_argument('--testlist', required=True, help='testing list')
@@ -69,7 +69,7 @@ os.makedirs(args.logdir, exist_ok=True)
 print("creating new summary file")
 logger = SummaryWriter(args.logdir)
 
-# args.maxdisp = int(args.maxdisp * args.zoom)
+args.maxdisp = int(args.maxdisp * args.zoom)
 # dataset, dataloader
 StereoDataset = __datasets__[args.dataset]
 train_dataset = StereoDataset(args.datapath, args.trainlist, True, args)

@@ -1,22 +1,100 @@
 #!/usr/bin/env bash
 set -e
-DATAPATH="/media/Data/datasets/SceneFlow/"
-SAVEPATH="/mnt/Data2/liyan/GwcNet/"
+DATAPATH="/media/datasets/SceneFlow/"
+SAVEPATH="./checkpoints/sceneflow/"
 python main.py --dataset sceneflow \
     --datapath $DATAPATH --trainlist ./filenames/sceneflow_train.txt --testlist ./filenames/sceneflow_test.txt \
     --maxdisp 192 \
-    --epochs 30 --lrepochs "7,12,14,20:2" \
-    --batch_size 32 \
-    --lr 0.001 \
-    --resume \
+    --zoom 0.5 \
+    --crop_w 448 \
+    --crop_h 284 \
+    --epochs 17 --lrepochs "10,12,14,16:2" \
+    --batch_size 8 \
+    --loss_type 'smooth_l1' \
     --training \
-    --model gwcnet-gcs \
-    --loss_type 'UC' \
     --save_test \
+    --mask 'soft' \
     --bin_scale 'log' \
     --n_bins 11 \
     --inliers 3 \
-    --logdir $SAVEPATH/checkpoints/sceneflow/gwcnet-gcs-uc-3std-11b \
-    --batch_size 2 \
+    --model gwcnet-gc \
+    --logdir $SAVEPATH/gwc-gc-sml1-log-3std/ \
     --test_batch_size 2 \
-    --device_id 0 1
+    --device_id 0
+
+
+python main.py --dataset sceneflow \
+    --datapath $DATAPATH --trainlist ./filenames/sceneflow_train.txt --testlist ./filenames/sceneflow_test.txt \
+    --maxdisp 192 \
+    --zoom 0.5 \
+    --crop_w 448 \
+    --crop_h 284 \
+    --epochs 17 --lrepochs "10,12,14,16:2" \
+    --batch_size 8 \
+    --loss_type 'smooth_l1' \
+    --training \
+    --save_test \
+    --mask 'hard' \
+    --bin_scale 'log' \
+    --inliers 5 \
+    --model gwcnet-gc \
+    --logdir $SAVEPATH/gwc-gc-sml1-epe5/ \
+    --test_batch_size 2 \
+    --device_id 0
+
+python main.py --dataset sceneflow \
+    --datapath $DATAPATH --trainlist ./filenames/sceneflow_train.txt --testlist ./filenames/sceneflow_test.txt \
+    --maxdisp 192 \
+    --zoom 0.5 \
+    --crop_w 448 \
+    --crop_h 284 \
+    --epochs 17 --lrepochs "10,12,14,16:2" \
+    --batch_size 8 \
+    --loss_type 'KG' \
+    --training \
+    --save_test \
+    --mask 'soft' \
+    --bin_scale 'log' \
+    --inliers 3 \
+    --model gwcnet-gcs \
+    --logdir $SAVEPATH/gwc-gcs-kg-log-3std/ \
+    --test_batch_size 2 \
+    --device_id 0
+
+python main.py --dataset sceneflow \
+    --datapath $DATAPATH --trainlist ./filenames/sceneflow_train.txt --testlist ./filenames/sceneflow_test.txt \
+    --maxdisp 192 \
+    --zoom 0.5 \
+    --crop_w 448 \
+    --crop_h 284 \
+    --epochs 17 --lrepochs "10,12,14,16:2" \
+    --batch_size 8 \
+    --loss_type 'KG' \
+    --training \
+    --save_test \
+    --mask 'soft' \
+    --bin_scale 'log' \
+    --inliers 3 \
+    --model gwcnet-gcs \
+    --logdir $SAVEPATH/gwc-gcs-kg-log-3std/ \
+    --test_batch_size 2 \
+    --device_id 0
+
+python main.py --dataset sceneflow \
+    --datapath $DATAPATH --trainlist ./filenames/sceneflow_train.txt --testlist ./filenames/sceneflow_test.txt \
+    --maxdisp 192 \
+    --zoom 0.5 \
+    --crop_w 448 \
+    --crop_h 284 \
+    --epochs 17 --lrepochs "10,12,14,16:2" \
+    --batch_size 8 \
+    --loss_type 'UC' \
+    --training \
+    --save_test \
+    --mask 'hard' \
+    --bin_scale 'log' \
+    --inliers 5 \
+    --model gwcnet-gcs \
+    --logdir $SAVEPATH/gwc-gcs-uc-epe5/ \
+    --test_batch_size 2 \
+    --device_id 0

@@ -737,13 +737,34 @@ def compute_auc_EPE_conf(signed_errors, abs_errors, conf_est, gt_disp,outdir,suf
     print('\n')
 
 def compute_auc_EPE(signed_errors, abs_errors, gt_disp, outdir,suffix,args):
-
     epe_std = np.std(abs_errors)
     epe_miu = np.mean(abs_errors)
     dist_to_miu = np.abs(abs_errors - epe_miu)
-    txt_file = outdir+'statistic.txt'
+    txt_file = outdir + 'statistic.txt'
 
-    inliers = np.ones(dist_to_miu.shape,dtype=np.bool)
+    if args.inliers > 0:
+        if args.mask in ['soft']:
+            epe_std = np.std(abs_errors)
+            epe_miu = np.mean(abs_errors)
+            dist_to_miu = np.abs(abs_errors - epe_miu)
+            inliers = (dist_to_miu < args.inliers * epe_std)
+            with open(txt_file, 'a') as f:
+                f.write('inliers def: epe< mu+ {}sigma'.format(args.inliers))
+                f.write('\n')
+            f.close()
+        else:
+            inliers = (abs_errors < args.inliers)
+            with open(txt_file, 'a') as f:
+                f.write('inliers def: epe< {}'.format(args.inliers))
+                f.write('\n')
+            f.close()
+        pct = abs_errors[inliers].shape[0] / abs_errors.shape[0]
+        with open(txt_file, 'a') as f:
+            f.write('inliers pct: {:.4f}'.format(pct))
+            f.write('\n')
+        f.close()
+    else:
+        inliers = np.ones(dist_to_miu.shape, dtype=np.bool)
 
     # inliers = (abs_errors<5)
 
@@ -1007,6 +1028,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Runing Global statistic on the results')
     parser.add_argument('--epochs', type=int, required=True, help='number of epochs to train')
     parser.add_argument('--maxdisp', type=int, default=192, help='max disparity range')
+    parser.add_argument('--zoom', type=float, default=1.0, help='scaler for zoom in/out the image')
     parser.add_argument('--logdir', required=True, help='the directory to save logs and checkpoints')
     parser.add_argument('--inliers', type=int, default=3, help='how many std to include for inliers')
     parser.add_argument('--mask', type=str, default='soft', help='type of mask assignment',choices=['soft','hard'])
@@ -1021,6 +1043,9 @@ if __name__ == "__main__":
     # ##################################
     # # processing the raw outputs
     # ##################################
+
+
+
     logdir = args.logdir
     epoch_idx = args.epochs
     # key_list = ['disp_est','disp_gt','conf_est']
