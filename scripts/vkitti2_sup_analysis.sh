@@ -38,7 +38,7 @@ do
     --mask 'hard' \
     --inliers 5 \
     --model gwcnet-gc \
-    --loadckpt $SAVEPATH/vkitti2/$CKPT \
+    --loadckpt $SAVEPATH/vkitti2/$LOADDIR/$CKPT \
     --logdir $SAVEPATH/vkitti2/$LOADDIR/$S/ \
     --test_batch_size 2 \
     --device_id 0 1
@@ -65,7 +65,7 @@ do
     --mask 'hard' \
     --inliers 5 \
     --model gwcnet-gc \
-    --loadckpt $SAVEPATH/vkitti2/$CKPT \
+    --loadckpt $SAVEPATH/vkitti2/$LOADDIR/$CKPT \
     --logdir $SAVEPATH/drivingstereo/$LOADDIR/$W/ \
     --test_batch_size 2 \
     --device_id 0 1
@@ -114,7 +114,7 @@ do
     --bin_scale log \
     --n_bins 11 \
     --model gwcnet-gc \
-    --loadckpt $SAVEPATH/vkitti2/$CKPT \
+    --loadckpt $SAVEPATH/vkitti2/$LOADDIR/$CKPT \
     --logdir $SAVEPATH/vkitti2/$LOADDIR/$S/ \
     --test_batch_size 2 \
     --device_id 0 1
@@ -145,7 +145,7 @@ do
     --bin_scale log \
     --n_bins 11 \
     --model gwcnet-gc \
-    --loadckpt $SAVEPATH/vkitti2/$CKPT \
+    --loadckpt $SAVEPATH/vkitti2/$LOADDIR/$CKPT \
     --logdir $SAVEPATH/drivingstereo/$LOADDIR/$W/ \
     --test_batch_size 2 \
     --device_id 0 1
@@ -193,7 +193,7 @@ do
     --mask 'hard' \
     --inliers 5 \
     --model gwcnet-gcs \
-    --loadckpt $SAVEPATH/vkitti2/$CKPT \
+    --loadckpt $SAVEPATH/vkitti2/$LOADDIR/$CKPT \
     --logdir $SAVEPATH/vkitti2/$LOADDIR/$S/ \
     --test_batch_size 2 \
     --device_id 0 1
@@ -221,7 +221,7 @@ do
     --mask 'hard' \
     --inliers 5 \
     --model gwcnet-gcs \
-    --loadckpt $SAVEPATH/vkitti2/$CKPT \
+    --loadckpt $SAVEPATH/vkitti2/$LOADDIR/$CKPT \
     --logdir $SAVEPATH/drivingstereo/$LOADDIR/$W/ \
     --test_batch_size 2 \
     --device_id 0 1
