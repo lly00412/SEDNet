@@ -1044,7 +1044,7 @@ if __name__ == "__main__":
     # # processing the raw outputs
     # ##################################
 
-
+    args.maxdisp = int(args.maxdisp * args.zoom)
 
     logdir = args.logdir
     epoch_idx = args.epochs
