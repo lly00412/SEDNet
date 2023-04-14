@@ -1,6 +1,6 @@
 # SEDNet
 
-This is the Python implementation of the SEDNet with GwcNet backbone. (**Learning the Distribution of Errors in Stereo Matching for Joint Disparity and Uncertainty Estimation**. Submitted to CVPR 2023)
+This is the Python implementation of the SEDNet with GwcNet backbone. (**Learning the Distribution of Errors in Stereo Matching for Joint Disparity and Uncertainty Estimation**. Published at CVPR 2023) [[Paper](https://arxiv.org/abs/2304.00152)]
 
 ## Environment
 * python 3.7
