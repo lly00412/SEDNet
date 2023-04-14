@@ -51,3 +51,12 @@ Download datasets at:
 * [VKITT2](https://github.com/lly00412/SEDNet/blob/c2be9da4e9d3e534fcc1f883f1d3a4be4b14516a/checkpoints/vkitti2/sednet-gwc-3std-lr1e-4/checkpoint_000025.ckpt): SEDNet with a soft inlier threshold of 3 sigma and 11 bins in logspace.
 
 ## Citation
+'''
+@article{chen2023learning,
+  title={Learning the Distribution of Errors in Stereo Matching for Joint Disparity and Uncertainty Estimation},
+  author={Chen, Liyan and Wang, Weihan and Mordohai, Philippos},
+  journal={arXiv e-prints},
+  pages={arXiv--2304},
+  year={2023}
+}
+'''
