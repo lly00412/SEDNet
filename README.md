@@ -52,11 +52,11 @@ Download datasets at:
 
 ## Citation
 ```
-@article{chen2023learning,
+@inproceedings{chen2023learning,
   title={Learning the Distribution of Errors in Stereo Matching for Joint Disparity and Uncertainty Estimation},
   author={Chen, Liyan and Wang, Weihan and Mordohai, Philippos},
-  journal={arXiv e-prints},
-  pages={arXiv--2304},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={17235--17244},
   year={2023}
 }
 ```
